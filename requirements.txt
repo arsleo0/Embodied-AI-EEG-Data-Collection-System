@@ -1,0 +1,34 @@
+# Embodied AI EEG Data Collection System
+# Core Dependencies - Phase 1
+
+# EEG Device Interface
+brainflow>=5.12.0          # Multi-device EEG SDK (Muse, OpenBCI, etc.)
+
+# Data Processing
+numpy>=1.24.0              # Numerical computing
+scipy>=1.10.0              # Signal processing
+
+# Data Storage
+h5py>=3.8.0                # HDF5 for EEG time-series
+pyarrow>=12.0.0            # Parquet for metadata/logs
+pandas>=2.0.0              # Data manipulation
+
+# Configuration
+pyyaml>=6.0                # YAML config parsing
+python-dotenv>=1.0.0       # Environment variables
+
+# CLI Interface
+click>=8.1.0               # Command-line interface
+rich>=13.0.0               # Terminal formatting/progress
+
+# Audio Recording
+sounddevice>=0.4.6         # Cross-platform audio I/O
+soundfile>=0.12.0          # Audio file I/O
+
+# Utilities
+pytz>=2023.3               # Timezone handling
+
+# Development (optional)
+# pytest>=7.0.0            # Testing
+# black>=23.0.0            # Code formatting
+# mypy>=1.0.0              # Type checking

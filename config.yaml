@@ -1,0 +1,155 @@
+# Embodied AI EEG Data Collection System - Configuration
+# All paths are relative to project root unless specified
+
+# =============================================================================
+# EEG Device Configuration
+# =============================================================================
+eeg:
+  # Device selection
+  device_type: "muse_2"          # Options: muse_2, muse_s, openbci_cyton, synthetic
+
+  # Muse-specific settings
+  muse:
+    serial_number: null           # Auto-detect if null, or specify like "Muse-XXXX"
+    channels:                     # Muse 2 channel names
+      - "TP9"                     # Left ear
+      - "AF7"                     # Left forehead
+      - "AF8"                     # Right forehead
+      - "TP10"                    # Right ear
+    aux_channels:
+      - "Right AUX"               # Auxiliary (PPG on Muse S)
+
+  # BrainFlow board settings
+  brainflow:
+    board_id: 22                  # 22 = Muse 2, 21 = Muse S, -1 = Synthetic
+    sampling_rate: 256            # Hz (Muse default)
+    timeout: 15                   # Connection timeout in seconds
+
+  # Signal processing
+  processing:
+    notch_filter: 60              # Hz - Power line noise (60 Hz US, 50 Hz EU)
+    bandpass_low: 1               # Hz - High-pass cutoff
+    bandpass_high: 50             # Hz - Low-pass cutoff
+
+# =============================================================================
+# Data Storage Configuration
+# =============================================================================
+storage:
+  # Base directory for all data
+  base_path: "data"
+
+  # Raw EEG data (HDF5)
+  raw:
+    path: "data/raw"
+    format: "hdf5"
+    compression: "gzip"
+    compression_level: 4
+    chunk_duration: 60            # Seconds per chunk
+
+  # Processed/analyzed data
+  processed:
+    path: "data/processed"
+    format: "parquet"
+
+  # Export formats
+  exports:
+    path: "data/exports"
+    formats:
+      - "csv"
+      - "parquet"
+
+# =============================================================================
+# Sensor Configuration
+# =============================================================================
+sensors:
+  # GPS settings
+  gps:
+    enabled: true
+    source: "phone"               # Options: phone, usb_dongle, manual
+    phone:
+      protocol: "websocket"       # How to receive GPS from phone
+      port: 8765
+    update_interval: 1.0          # Seconds between GPS readings
+
+  # Audio recording
+  audio:
+    enabled: true
+    sample_rate: 16000            # Hz (good for speech)
+    channels: 1                   # Mono
+    format: "wav"
+    device: null                  # null = default microphone
+
+  # Timestamps
+  timestamps:
+    format: "iso8601"             # ISO 8601 format
+    timezone: "local"             # "local" or specific like "America/New_York"
+    sync_ntp: false               # NTP sync (future feature)
+
+# =============================================================================
+# Scenario Configuration
+# =============================================================================
+scenarios:
+  # Default scenario settings
+  defaults:
+    duration: null                # null = manual stop, or seconds
+    markers_enabled: true         # Allow event markers
+    auto_save: true               # Auto-save on stop
+
+  # Scenario definitions directory
+  definitions_path: "scenarios"
+
+  # Built-in scenario types
+  types:
+    - "urban_walk"
+    - "creative_flow"
+    - "social_interaction"
+    - "problem_solving"
+    - "meditation"
+
+# =============================================================================
+# Logging Configuration
+# =============================================================================
+logging:
+  level: "INFO"                   # DEBUG, INFO, WARNING, ERROR
+  console: true
+  file:
+    enabled: true
+    path: "logs"
+    rotation: "daily"
+    retention: 30                 # Days to keep logs
+
+# =============================================================================
+# Privacy Settings
+# =============================================================================
+privacy:
+  # All data stays local
+  local_only: true
+
+  # Data anonymization
+  anonymize:
+    strip_device_serial: true
+    hash_session_ids: false
+
+  # No telemetry
+  telemetry: false
+
+# =============================================================================
+# Future Features (Phase 2+)
+# =============================================================================
+future:
+  # Real-time visualization
+  visualization:
+    enabled: false
+    backend: "plotly"             # plotly, matplotlib
+
+  # LLM integration
+  llm:
+    enabled: false
+    provider: "openai"            # For GPT-4o integration
+    local_inference: true         # Prefer local models
+
+  # Whisper transcription
+  transcription:
+    enabled: false
+    model: "base"                 # tiny, base, small, medium, large
+    local: true                   # Use local Whisper

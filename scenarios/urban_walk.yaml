@@ -1,0 +1,41 @@
+# Urban Walk Scenario
+# Navigate through different urban environments while collecting EEG data
+
+name: "Urban Walk"
+description: "City navigation with varying environmental stimuli (traffic, crowds, quiet zones)"
+
+# Duration in seconds (null for manual stop)
+duration: null
+
+# Event markers for this scenario
+markers:
+  - name: "enter_busy"
+    key: "b"
+    description: "Entering busy/crowded area"
+  - name: "enter_quiet"
+    key: "u"
+    description: "Entering quiet/calm area"
+  - name: "traffic"
+    key: "t"
+    description: "Near traffic/noise source"
+  - name: "nature"
+    key: "r"
+    description: "Nature element (park, trees, water)"
+  - name: "social"
+    key: "s"
+    description: "Social interaction occurred"
+
+# Instructions shown at start
+instructions:
+  - "Walk through different urban environments at a comfortable pace"
+  - "Use markers to note transitions between environment types"
+  - "Mark emotional responses to stimuli as they occur"
+  - "Try to include both busy and quiet areas in your route"
+  - "Note any unexpected or notable events"
+
+# Tags for categorization
+tags:
+  - "outdoor"
+  - "mobility"
+  - "environmental"
+  - "emotion"
