@@ -1,0 +1,1 @@
+"""Meta-awareness detection module."""

@@ -1,0 +1,1 @@
+"""Attention pattern analysis module."""

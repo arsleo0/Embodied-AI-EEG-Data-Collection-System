@@ -15,7 +15,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import click
 
-from src.eeg.connection import test_connection, list_available_devices
+from src.foundation.eeg.connection import test_connection, list_available_devices
 
 
 @click.command()

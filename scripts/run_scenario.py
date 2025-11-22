@@ -15,8 +15,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import click
 
-from src.config.settings import load_config
-from src.scenarios.runner import ScenarioRunner
+from src.foundation.config.settings import load_config
+from src.foundation.scenarios.runner import ScenarioRunner
 
 
 @click.command()

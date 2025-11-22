@@ -7,8 +7,8 @@ import sys
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.config.settings import Config, load_config
-from src.eeg.connection import EEGConnection, list_available_devices
+from src.foundation.config.settings import Config, load_config
+from src.foundation.eeg.connection import EEGConnection, list_available_devices
 
 
 class TestConfig:
