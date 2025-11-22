@@ -131,6 +131,9 @@ python scripts/run_scenario.py --list
 
 # Run analysis example
 python scripts/analysis_example.py
+
+# Run consciousness analysis example (TIER 2)
+python scripts/consciousness_example.py
 ```
 
 ## TIER 1: Analysis Usage
@@ -218,6 +221,103 @@ predictions = pipeline.predict(new_eeg)
 pipeline.save("models/pipeline.pkl")
 ```
 
+## TIER 2: Consciousness Analysis
+
+### Latent Space Mapping
+
+```python
+from src.consciousness.latent_space import (
+    ConsciousnessMapper,
+    LatentSpaceVisualizer,
+    TrajectoryTracker,
+)
+
+# Map EEG features to consciousness embedding space
+mapper = ConsciousnessMapper(embedding_dim=32, use_semantic=False)
+embeddings = mapper.fit_transform(features, state_labels)
+
+# Find nearest consciousness state
+nearest = mapper.find_nearest_state(embeddings[0], top_k=3)
+for state, distance in nearest:
+    print(f"{state}: {distance:.3f}")
+
+# Visualize latent space with UMAP/t-SNE
+visualizer = LatentSpaceVisualizer(method="umap", n_components=2)
+coords = visualizer.fit_transform(embeddings)
+fig = visualizer.plot_2d(coords, state_labels, title="Consciousness Space")
+fig.write_html("consciousness_space.html")
+
+# Track consciousness trajectory over time
+tracker = TrajectoryTracker()
+for i, embedding in enumerate(embeddings):
+    tracker.add_point(embedding, timestamp=float(i), label=state_labels[i])
+
+trajectory = tracker.get_trajectory()
+metrics = tracker.compute_metrics()
+print(f"Trajectory efficiency: {metrics['efficiency']:.3f}")
+```
+
+### Attention Pattern Analysis
+
+```python
+from src.consciousness.attention import (
+    AttentionAnalyzer,
+    AttentionComparator,
+    compute_attention_entropy,
+)
+
+# Analyze Global Workspace metrics
+analyzer = AttentionAnalyzer(fs=256)
+gw_metrics = analyzer.compute_global_workspace(eeg_data)
+
+print(f"Integration: {gw_metrics.integration:.3f}")
+print(f"Differentiation: {gw_metrics.differentiation:.3f}")
+print(f"Broadcast strength: {gw_metrics.broadcast_strength:.3f}")
+
+# Compute attention entropy
+entropy = compute_attention_entropy(eeg_data, fs=256)
+print(f"Spatial entropy: {entropy['spatial_entropy']:.3f}")
+
+# Compare human-AI attention patterns
+comparator = AttentionComparator(n_regions=4)
+alignment = comparator.compare(human_attention, ai_attention)
+print(f"Correlation: {alignment.correlation:.3f}")
+print(f"Overlap: {alignment.overlap:.3f}")
+```
+
+### Meta-Awareness Detection
+
+```python
+from src.consciousness.meta_awareness import (
+    IntrospectionDetector,
+    UncertaintyQuantifier,
+    compute_metacognitive_index,
+)
+
+# Detect introspection and self-awareness
+detector = IntrospectionDetector(fs=256, channel_names=["TP9", "AF7", "AF8", "TP10"])
+state = detector.detect(eeg_data)
+
+print(f"Self-awareness: {state.self_awareness:.3f}")
+print(f"Introspection: {state.introspection:.3f}")
+print(f"Metacognitive index: {state.metacognitive_index:.3f}")
+
+# Quantify prediction uncertainty
+quantifier = UncertaintyQuantifier(n_bootstrap=100)
+uncertainty = quantifier.quantify(predictions, features)
+
+print(f"Epistemic uncertainty: {uncertainty.epistemic:.3f}")
+print(f"Aleatoric uncertainty: {uncertainty.aleatoric:.3f}")
+print(f"Reliability: {uncertainty.reliability:.3f}")
+```
+
+### Run Consciousness Example
+
+```bash
+# Full consciousness analysis example
+python scripts/consciousness_example.py
+```
+
 ## Implementation Tiers
 
 ### TIER 0: Foundation (Complete)
@@ -232,10 +332,10 @@ pipeline.save("models/pipeline.pkl")
 - [x] Feature extraction (PSD, coherence, entropy)
 - [x] State classification (Random Forest, evaluation)
 
-### TIER 2: AI Consciousness (Planned)
-- [ ] Latent space mapper (EEG → embeddings)
-- [ ] Attention pattern analyzer
-- [ ] Meta-awareness detector
+### TIER 2: AI Consciousness (Complete)
+- [x] Latent space mapper (EEG → embeddings)
+- [x] Attention pattern analyzer (Global Workspace metrics)
+- [x] Meta-awareness detector (introspection, uncertainty)
 
 ### TIER 3: Advanced Research (Planned)
 - [ ] Qualia synthesizer
@@ -339,7 +439,7 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for design decisions.
 **Storage:** HDF5, Parquet, Pandas
 **ML:** Scikit-learn, PyTorch (planned)
 **Viz:** Plotly, Matplotlib, Streamlit (planned)
-**AI:** Anthropic API, Sentence-transformers (planned)
+**AI:** Sentence-transformers, UMAP
 
 ## References
 
