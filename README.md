@@ -128,6 +128,94 @@ python scripts/run_scenario.py urban_walk
 
 # List available scenarios
 python scripts/run_scenario.py --list
+
+# Run analysis example
+python scripts/analysis_example.py
+```
+
+## TIER 1: Analysis Usage
+
+### Signal Processing
+
+```python
+from src.analysis.signal import Preprocessor, SignalQualityAssessor
+
+# Create preprocessor
+preprocessor = Preprocessor(fs=256)
+preprocessor.configure(
+    notch_freq=60,          # Remove power line noise
+    bandpass=(1, 50),       # Keep 1-50 Hz
+    remove_artifacts=True,  # Detect and remove artifacts
+    baseline_correct=True,  # Zero-mean
+)
+
+# Process EEG data
+clean_eeg = preprocessor.process(raw_eeg)
+
+# Assess signal quality
+assessor = SignalQualityAssessor(fs=256)
+report = assessor.generate_report(clean_eeg)
+print(f"Quality: {report['overall_label']} ({report['overall_score']}/100)")
+```
+
+### Feature Extraction
+
+```python
+from src.analysis.features import FeatureExtractor, compute_band_power
+
+# Extract all features
+extractor = FeatureExtractor(fs=256, channel_names=["TP9", "AF7", "AF8", "TP10"])
+features = extractor.extract(eeg_data, flatten=True)
+
+# Or extract specific features
+band_powers = compute_band_power(eeg_data, fs=256)
+print(f"Alpha power: {band_powers['alpha']}")
+print(f"Beta power: {band_powers['beta']}")
+```
+
+### State Classification
+
+```python
+from src.analysis.classification import StateClassifier, evaluate_classifier
+
+# Create and train classifier
+classifier = StateClassifier(model_type="random_forest", n_estimators=100)
+classifier.fit(X_train, y_train)
+
+# Predict states
+predictions = classifier.predict(X_test)
+
+# Evaluate
+report = evaluate_classifier(y_test, predictions)
+print(f"Accuracy: {report.accuracy:.2%}")
+
+# Get feature importance
+importance = classifier.get_feature_importance()
+
+# Save model
+classifier.save("models/state_classifier.pkl")
+```
+
+### Complete Pipeline
+
+```python
+from src.analysis import ClassificationPipeline
+
+# Create end-to-end pipeline
+pipeline = ClassificationPipeline(
+    fs=256,
+    channel_names=["TP9", "AF7", "AF8", "TP10"],
+    classifier_type="random_forest",
+)
+
+# Fit on sessions
+pipeline.fit(eeg_sessions, labels)
+
+# Predict on new data
+predictions = pipeline.predict(new_eeg)
+
+# Save pipeline
+pipeline.save("models/pipeline.pkl")
 ```
 
 ## Implementation Tiers
@@ -139,10 +227,10 @@ python scripts/run_scenario.py --list
 - [x] Scenario runner with event markers
 - [x] GPS and audio skeletons
 
-### TIER 1: Analysis Core (In Progress)
-- [ ] Signal processing (filtering, artifact removal)
-- [ ] Feature extraction (PSD, coherence, entropy)
-- [ ] State classification (Flow, Focus, Meditation)
+### TIER 1: Analysis Core (Complete)
+- [x] Signal processing (filtering, artifact removal)
+- [x] Feature extraction (PSD, coherence, entropy)
+- [x] State classification (Random Forest, evaluation)
 
 ### TIER 2: AI Consciousness (Planned)
 - [ ] Latent space mapper (EEG → embeddings)
