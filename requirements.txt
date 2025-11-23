@@ -20,6 +20,13 @@ plotly>=5.15.0               # Interactive visualizations
 Pillow>=10.0.0               # Image processing for qualia synthesis
 librosa>=0.10.0              # Audio feature extraction
 
+# User Experience & Visualization (TIER 4)
+streamlit>=1.28.0            # Real-time dashboard
+jinja2>=3.1.0                # Template engine for reports
+python-docx>=1.0.0           # DOCX document export
+openpyxl>=3.1.0              # Excel file export
+# weasyprint>=60.0           # PDF export (optional, requires system deps)
+
 # Data Storage
 h5py>=3.8.0                # HDF5 for EEG time-series
 pyarrow>=12.0.0            # Parquet for metadata/logs

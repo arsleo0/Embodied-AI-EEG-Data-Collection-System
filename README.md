@@ -416,6 +416,170 @@ print(f"Arousal: {qualia.arousal:.3f}")
 python scripts/emergence_analysis_example.py
 ```
 
+## TIER 4: User Experience & Visualization
+
+### Real-time Dashboard
+
+```bash
+# Launch the dashboard
+python scripts/launch_dashboard.py
+
+# Launch in demo mode
+python scripts/launch_dashboard.py --demo
+
+# Specify port
+python scripts/launch_dashboard.py --port 8502
+```
+
+The dashboard provides:
+- Real-time EEG signal visualization
+- Consciousness state monitoring
+- Signal quality indicators
+- Band power analysis
+- Event marker timeline
+
+### Report Generation
+
+```python
+from src.integrations.reports import (
+    ReportGenerator,
+    generate_session_report,
+    generate_analysis_report,
+)
+from src.integrations.reports.templates import SessionTemplate
+from src.integrations.reports.exporters import (
+    HTMLExporter,
+    MarkdownExporter,
+    DataExporter,
+)
+
+# Generate session report
+session_data = {
+    "title": "Meditation Session",
+    "session_id": "med_001",
+    "start_time": datetime.now(),
+    "duration": 300.0,
+    "device": "Muse 2",
+    "scenario": "Meditation",
+    "channels": ["TP9", "AF7", "AF8", "TP10"],
+    "sample_rate": 256,
+    "n_samples": 76800,
+    "quality": {"TP9": 0.9, "AF7": 0.85, "AF8": 0.88, "TP10": 0.82},
+    "markers": [{"time": 0, "label": "start"}],
+}
+
+# HTML export
+report_path = generate_session_report(session_data, "report.html", format="html")
+print(f"Report saved to: {report_path}")
+
+# JSON export
+generate_session_report(session_data, "report.json", format="json")
+
+# Markdown export
+exporter = MarkdownExporter()
+exporter.export(session_data, "report.md", report_type="session")
+
+# Data export (CSV, Excel)
+data_exporter = DataExporter()
+data_exporter.to_csv(features, "features.csv")
+data_exporter.to_excel(results, "results.xlsx")
+```
+
+Generate reports from command line:
+
+```bash
+# Generate demo report
+python scripts/generate_report.py --demo
+
+# Generate from session data
+python scripts/generate_report.py session_data.json -o report.html
+
+# Different formats
+python scripts/generate_report.py session_data.json --format markdown
+python scripts/generate_report.py session_data.json --format pdf
+```
+
+### 3D Latent Space Explorer
+
+```python
+from src.integrations.visualization import (
+    LatentSpaceViewer,
+    create_3d_scatter,
+    create_trajectory_plot,
+)
+
+# Create viewer
+viewer = LatentSpaceViewer()
+viewer.set_data(embeddings, labels=state_labels, timestamps=timestamps)
+
+# Generate 3D scatter plot
+fig = viewer.create_figure()
+fig.show()
+
+# With trajectory
+fig = viewer.create_figure(show_trajectory=True)
+fig.write_html("latent_space.html")
+
+# Animate trajectory over time
+animation = viewer.animate_trajectory(duration=10.0)
+animation.write_html("trajectory_animation.html")
+
+# Quick plotting functions
+fig = create_3d_scatter(embeddings, labels)
+fig = create_trajectory_plot(embeddings, timestamps)
+```
+
+Command line visualization:
+
+```bash
+# Demo visualization
+python scripts/visualize_latent_space.py --demo
+
+# From saved embeddings
+python scripts/visualize_latent_space.py embeddings.npz
+
+# Show trajectory
+python scripts/visualize_latent_space.py embeddings.npz --trajectory
+
+# Launch interactive app
+python scripts/visualize_latent_space.py --app
+```
+
+### Interactive Plots
+
+```python
+from src.integrations.visualization import (
+    TimeSeriesPlot,
+    SpectrogramPlot,
+    TopoPlot,
+    BandPowerPlot,
+    create_dashboard_layout,
+)
+
+# Time series with zoom/pan
+ts_plot = TimeSeriesPlot()
+fig = ts_plot.plot(eeg_data, fs=256, channels=['TP9', 'AF7', 'AF8', 'TP10'])
+fig.show()
+
+# Interactive spectrogram
+spec_plot = SpectrogramPlot()
+fig = spec_plot.plot(signal, fs=256, freq_range=(0, 50))
+
+# Topographic map
+topo_plot = TopoPlot()
+fig = topo_plot.plot({'TP9': 0.8, 'AF7': 0.9, 'AF8': 0.85, 'TP10': 0.75})
+
+# Band power visualization
+bp_plot = BandPowerPlot()
+fig = bp_plot.plot_bars(band_powers, normalize=True)
+fig = bp_plot.plot_radar(band_powers)
+fig = bp_plot.plot_comparison([powers1, powers2], labels=["Session 1", "Session 2"])
+
+# Complete dashboard layout
+fig = create_dashboard_layout(eeg_data, fs=256, channels=channel_names)
+fig.write_html("dashboard.html")
+```
+
 ## Implementation Tiers
 
 ### TIER 0: Foundation (Complete)
@@ -440,10 +604,11 @@ python scripts/emergence_analysis_example.py
 - [x] Temporal binding tracker (specious present, memory)
 - [x] Emergence metrics (IIT, complexity, phase transitions)
 
-### TIER 4: User Experience (Planned)
-- [ ] Real-time dashboard
-- [ ] Report generator
-- [ ] 3D latent space viewer
+### TIER 4: User Experience (Complete)
+- [x] Real-time dashboard (Streamlit)
+- [x] Report generator (HTML, JSON, Markdown, PDF)
+- [x] 3D latent space viewer
+- [x] Interactive visualization tools
 
 See [ROADMAP.md](docs/ROADMAP.md) for detailed implementation timeline.
 
@@ -536,7 +701,8 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for design decisions.
 **Core:** Python 3.10+, BrainFlow, NumPy, SciPy
 **Storage:** HDF5, Parquet, Pandas
 **ML:** Scikit-learn, PyTorch (planned)
-**Viz:** Plotly, Matplotlib, Streamlit (planned)
+**Viz:** Plotly, Matplotlib, Streamlit
+**Reports:** Jinja2, python-docx, openpyxl
 **AI:** Sentence-transformers, UMAP
 
 ## References
