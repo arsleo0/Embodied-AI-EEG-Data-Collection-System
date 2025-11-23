@@ -16,6 +16,10 @@ sentence-transformers>=2.2.0  # Semantic embeddings for consciousness states
 umap-learn>=0.5.0            # UMAP dimensionality reduction
 plotly>=5.15.0               # Interactive visualizations
 
+# Advanced Research (TIER 3)
+Pillow>=10.0.0               # Image processing for qualia synthesis
+librosa>=0.10.0              # Audio feature extraction
+
 # Data Storage
 h5py>=3.8.0                # HDF5 for EEG time-series
 pyarrow>=12.0.0            # Parquet for metadata/logs

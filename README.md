@@ -318,6 +318,104 @@ print(f"Reliability: {uncertainty.reliability:.3f}")
 python scripts/consciousness_example.py
 ```
 
+## TIER 3: Advanced Research
+
+### Complexity and Emergence Metrics
+
+```python
+from src.consciousness.emergence import (
+    ComplexityAnalyzer,
+    IITAnalyzer,
+    PhaseTransitionDetector,
+    compute_lempel_ziv_complexity,
+    compute_phi_approximation,
+)
+
+# Analyze signal complexity
+complexity = ComplexityAnalyzer(n_scales=10)
+metrics = complexity.analyze(eeg_data)
+print(f"Lempel-Ziv: {metrics.lempel_ziv:.3f}")
+print(f"Fractal dimension: {metrics.fractal_dimension:.3f}")
+
+# IIT metrics (Phi approximation)
+iit = IITAnalyzer(n_bins=10)
+iit_metrics = iit.analyze(eeg_data)
+print(f"Phi: {iit_metrics.phi:.4f}")
+print(f"Integration: {iit_metrics.integration:.3f}")
+
+# Phase transition detection
+detector = PhaseTransitionDetector(fs=256)
+phase = detector.analyze(eeg_data)
+print(f"Phase: {phase.phase}")
+print(f"Edge of chaos: {phase.critical_point:.3f}")
+```
+
+### Temporal Binding and State Transitions
+
+```python
+from src.consciousness.emergence import (
+    TemporalBindingTracker,
+    TransitionDetector,
+    estimate_specious_present,
+    compute_transition_entropy,
+)
+
+# Analyze temporal integration windows
+tracker = TemporalBindingTracker(fs=256)
+binding = tracker.analyze(eeg_data)
+print(f"Integration window: {binding.integration_window:.3f}s")
+print(f"Context retention: {binding.context_retention:.3f}")
+
+# Estimate specious present (duration of "now")
+sp = estimate_specious_present(eeg_data, fs=256)
+print(f"Specious present: {sp:.2f}s")
+
+# Detect state transitions
+detector = TransitionDetector(threshold=0.5)
+analysis = detector.analyze(embeddings, timestamps, labels)
+print(f"Transitions: {len(analysis.transitions)}")
+print(f"Smoothness: {analysis.mean_smoothness:.3f}")
+```
+
+### Qualia Synthesis
+
+```python
+from src.consciousness.qualia import (
+    QualiaSynthesizer,
+    SynesthesiaSimulator,
+    EmotionalStateGenerator,
+)
+
+# Synesthesia: map state to sensory representations
+simulator = SynesthesiaSimulator()
+
+# What does "anxiety" look like?
+visual = simulator.state_to_visual("anxiety", eeg_features)
+print(f"Color: hue={visual['color']['hue']}°")
+
+# What does "flow" sound like?
+audio = simulator.state_to_audio("flow", eeg_features)
+print(f"Frequency: {audio['parameters']['base_freq']}Hz")
+
+# Generate emotional state from EEG
+emotion_gen = EmotionalStateGenerator()
+emotional = emotion_gen.from_eeg(features)
+print(f"Emotion: {emotional['emotion']}")
+print(f"Valence: {emotional['valence']:.2f}")
+
+# Full qualia synthesis
+synthesizer = QualiaSynthesizer(output_dim=128)
+qualia = synthesizer.synthesize(eeg_features, state="meditation")
+print(f"Arousal: {qualia.arousal:.3f}")
+```
+
+### Run Emergence Example
+
+```bash
+# Full emergence analysis example
+python scripts/emergence_analysis_example.py
+```
+
 ## Implementation Tiers
 
 ### TIER 0: Foundation (Complete)
@@ -337,10 +435,10 @@ python scripts/consciousness_example.py
 - [x] Attention pattern analyzer (Global Workspace metrics)
 - [x] Meta-awareness detector (introspection, uncertainty)
 
-### TIER 3: Advanced Research (Planned)
-- [ ] Qualia synthesizer
-- [ ] Temporal binding tracker
-- [ ] Emergence metrics (IIT)
+### TIER 3: Advanced Research (Complete)
+- [x] Qualia synthesizer (cross-modal, synesthesia)
+- [x] Temporal binding tracker (specious present, memory)
+- [x] Emergence metrics (IIT, complexity, phase transitions)
 
 ### TIER 4: User Experience (Planned)
 - [ ] Real-time dashboard
