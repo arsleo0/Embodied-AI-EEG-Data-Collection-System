@@ -580,6 +580,166 @@ fig = create_dashboard_layout(eeg_data, fs=256, channels=channel_names)
 fig.write_html("dashboard.html")
 ```
 
+## TIER 5: Ecosystem & Extensibility
+
+### REST API Server
+
+```bash
+# Start the API server
+python scripts/start_api_server.py
+
+# With custom settings
+python scripts/start_api_server.py --port 8080 --debug
+
+# Production with workers
+python scripts/start_api_server.py --workers 4 --api-key YOUR_KEY
+```
+
+API documentation available at `http://localhost:8000/docs`.
+
+### Using the API Client
+
+```python
+from src.integrations.api import WorkbenchClient
+
+# Create client
+client = WorkbenchClient("http://localhost:8000")
+
+# Create and manage sessions
+session = client.create_session("meditation_study", device="muse_2")
+client.start_session(session["session_id"])
+client.add_marker(session["session_id"], "eyes_closed")
+client.stop_session(session["session_id"])
+
+# Run analysis
+analysis = client.run_analysis(session["session_id"], analysis_type="full")
+print(f"Dominant state: {analysis['results']['dominant_state']}")
+
+# Classify consciousness state
+result = client.classify_state(features=[0.3, 0.25, 0.2, 0.15, 0.1])
+print(f"State: {result['state']} ({result['confidence']:.0%})")
+
+# Generate report
+report = client.generate_report(session["session_id"], format="html")
+```
+
+### Experiment Tracking
+
+```python
+from src.infrastructure import (
+    ExperimentTracker,
+    get_tracker,
+    log_params,
+    log_metrics,
+)
+
+# Create tracker
+tracker = ExperimentTracker("./experiments")
+
+# Run experiment
+with tracker.start_run("consciousness_study") as run:
+    tracker.log_params({
+        "model": "random_forest",
+        "n_estimators": 100,
+        "features": "band_powers",
+    })
+
+    # Your experiment code
+    accuracy = train_and_evaluate()
+
+    tracker.log_metric("accuracy", accuracy)
+    tracker.log_artifact("model.pkl")
+
+# Compare runs
+comparison = tracker.compare_runs(
+    "consciousness_study",
+    run_ids=["run1", "run2"],
+    metrics=["accuracy", "f1_score"]
+)
+```
+
+### Data Provenance
+
+```python
+from src.infrastructure import (
+    ProvenanceTracker,
+    get_provenance_tracker,
+)
+
+# Track data lineage
+tracker = get_provenance_tracker()
+
+# Register raw data
+tracker.register_data("raw_eeg", source="muse_device", data=raw_data)
+
+# Track processing
+with tracker.track_operation("filter", inputs=["raw_eeg"],
+                             parameters={"lowcut": 1, "highcut": 50}):
+    filtered = apply_filter(raw_data)
+    tracker.register_output("filtered_eeg", filtered)
+
+# Get lineage
+lineage = tracker.get_lineage("filtered_eeg")
+tracker.export_lineage("filtered_eeg", "lineage.md", format="markdown")
+```
+
+### Enhanced Plugin System
+
+```python
+from src.plugins import (
+    get_loader,
+    HookType,
+    hook,
+    invoke_hook,
+)
+
+# Load plugins dynamically
+loader = get_loader()
+loader.add_plugin_directory("./my_plugins")
+loader.discover_plugins()
+
+# Load specific plugin
+plugin = loader.load_plugin("MyAnalyzer", config={"threshold": 0.5})
+
+# Use hooks
+@hook(HookType.PRE_PROCESS, priority=50)
+def normalize_data(data):
+    return (data - data.mean()) / data.std()
+
+@hook(HookType.POST_ANALYSIS)
+def log_results(results):
+    print(f"Analysis complete: {results}")
+    return results
+
+# Invoke hooks
+result = invoke_hook(HookType.PRE_PROCESS, data=eeg_data)
+processed = result.modified_data
+```
+
+### Docker Deployment
+
+```bash
+# Build and deploy
+python scripts/deploy.py build
+python scripts/deploy.py up -d
+
+# View logs
+python scripts/deploy.py logs -f api
+
+# Stop services
+python scripts/deploy.py down
+```
+
+Or using docker-compose directly:
+
+```bash
+cd deployment
+docker-compose up -d
+
+# With MLflow tracking
+docker-compose --profile with-mlflow up -d
+```
+
 ## Implementation Tiers
 
 ### TIER 0: Foundation (Complete)
@@ -609,6 +769,15 @@ fig.write_html("dashboard.html")
 - [x] Report generator (HTML, JSON, Markdown, PDF)
 - [x] 3D latent space viewer
 - [x] Interactive visualization tools
+
+### TIER 5: Ecosystem & Extensibility (Complete)
+- [x] Enhanced plugin system with dynamic loading
+- [x] Event hook system for pipeline integration
+- [x] Experiment versioning and tracking
+- [x] MLflow integration for ML experiments
+- [x] Data provenance tracking
+- [x] FastAPI REST API with WebSocket streaming
+- [x] Docker deployment configuration
 
 See [ROADMAP.md](docs/ROADMAP.md) for detailed implementation timeline.
 
@@ -704,6 +873,8 @@ See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for design decisions.
 **Viz:** Plotly, Matplotlib, Streamlit
 **Reports:** Jinja2, python-docx, openpyxl
 **AI:** Sentence-transformers, UMAP
+**API:** FastAPI, Uvicorn, WebSockets, Pydantic
+**Deploy:** Docker, Docker Compose
 
 ## References
 

@@ -13,6 +13,8 @@ Plugin Types:
 
 from .base import (
     BasePlugin,
+    Plugin,
+    PluginMetadata,
     DataCollectorPlugin,
     AnalysisPlugin,
     ConsciousnessPlugin,
@@ -20,14 +22,44 @@ from .base import (
     ExternalServicePlugin,
 )
 from .registry import PluginRegistry, get_registry
+from .loader import PluginLoader, get_loader, load_plugin
+from .hooks import (
+    HookType,
+    HookManager,
+    HookResult,
+    get_hook_manager,
+    hook,
+    invoke_hook,
+)
+from .marketplace import PluginMarketplace, get_marketplace
+
+__version__ = "1.0.0"
 
 __all__ = [
+    # Base classes
     "BasePlugin",
+    "Plugin",
+    "PluginMetadata",
     "DataCollectorPlugin",
     "AnalysisPlugin",
     "ConsciousnessPlugin",
     "VisualizationPlugin",
     "ExternalServicePlugin",
+    # Registry
     "PluginRegistry",
     "get_registry",
+    # Loader
+    "PluginLoader",
+    "get_loader",
+    "load_plugin",
+    # Hooks
+    "HookType",
+    "HookManager",
+    "HookResult",
+    "get_hook_manager",
+    "hook",
+    "invoke_hook",
+    # Marketplace
+    "PluginMarketplace",
+    "get_marketplace",
 ]

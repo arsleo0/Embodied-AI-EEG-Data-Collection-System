@@ -1,0 +1,78 @@
+# Consciousness Research Workbench
+# Docker Compose Configuration
+
+version: '3.8'
+
+services:
+  # API Server
+  api:
+    build:
+      context: ..
+      dockerfile: deployment/docker/Dockerfile
+    container_name: crw-api
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONPATH=/app
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DEBUG=false
+    volumes:
+      - ../data:/app/data
+      - ../experiments:/app/experiments
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Dashboard
+  dashboard:
+    build:
+      context: ..
+      dockerfile: deployment/docker/Dockerfile
+    container_name: crw-dashboard
+    command: ["python", "-m", "streamlit", "run", "src/integrations/dashboard/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ../data:/app/data
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Redis (optional, for caching)
+  redis:
+    image: redis:7-alpine
+    container_name: crw-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    profiles:
+      - with-cache
+
+  # MLflow (optional, for experiment tracking)
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.8.0
+    container_name: crw-mlflow
+    ports:
+      - "5000:5000"
+    command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
+    volumes:
+      - mlflow_data:/mlflow
+    restart: unless-stopped
+    profiles:
+      - with-mlflow
+
+volumes:
+  redis_data:
+  mlflow_data:
+
+networks:
+  default:
+    name: crw-network

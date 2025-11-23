@@ -1,0 +1,149 @@
+# Consciousness Research Workbench
+# Production Configuration
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  debug: false
+
+  # Security
+  cors_origins:
+    - "https://your-domain.com"
+  rate_limit: 100  # requests per minute
+  api_key: "${API_KEY}"  # Set via environment variable
+
+  # Timeouts
+  request_timeout: 30
+  websocket_timeout: 300
+
+# EEG Configuration
+eeg:
+  device_type: "muse_2"
+  brainflow:
+    board_id: 22
+    sampling_rate: 256
+
+  # Quality thresholds
+  quality:
+    min_signal_quality: 0.6
+    max_artifact_ratio: 0.3
+
+# Storage Configuration
+storage:
+  base_dir: "/app/data"
+
+  raw:
+    format: "hdf5"
+    compression: "gzip"
+    compression_level: 6
+
+  processed:
+    format: "parquet"
+    compression: "snappy"
+
+  # Retention
+  retention_days: 90
+  archive_old_data: true
+
+# Analysis Configuration
+analysis:
+  # Processing
+  preprocessing:
+    notch_freq: 60
+    bandpass: [0.5, 50]
+    remove_artifacts: true
+
+  # Features
+  feature_extraction:
+    window_size: 256
+    overlap: 0.5
+    bands:
+      delta: [0.5, 4]
+      theta: [4, 8]
+      alpha: [8, 13]
+      beta: [13, 30]
+      gamma: [30, 50]
+
+  # Classification
+  classification:
+    model_type: "random_forest"
+    n_estimators: 100
+    confidence_threshold: 0.7
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  # File logging
+  file:
+    enabled: true
+    path: "/app/logs/crw.log"
+    max_size: "100MB"
+    backup_count: 5
+
+  # Structured logging
+  json_format: true
+
+# Monitoring
+monitoring:
+  # Metrics
+  metrics:
+    enabled: true
+    port: 9090
+
+  # Health checks
+  health:
+    interval: 30
+    timeout: 10
+
+# Cache Configuration
+cache:
+  enabled: false  # Enable with Redis
+  redis:
+    host: "redis"
+    port: 6379
+    db: 0
+  ttl: 3600
+
+# Experiment Tracking
+experiments:
+  tracking_dir: "/app/experiments"
+
+  # MLflow (optional)
+  mlflow:
+    enabled: false
+    tracking_uri: "http://mlflow:5000"
+    experiment_name: "consciousness-research"
+
+# Security
+security:
+  # Authentication
+  auth:
+    enabled: true
+    method: "api_key"
+
+  # Data encryption
+  encryption:
+    enabled: false
+    algorithm: "AES-256-GCM"
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100
+    burst: 20
+
+# Performance
+performance:
+  # Connection pooling
+  pool_size: 10
+  max_overflow: 20
+
+  # Async workers
+  async_workers: 4
+
+  # Memory limits
+  max_memory_mb: 4096
